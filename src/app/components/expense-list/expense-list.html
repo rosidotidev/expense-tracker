@@ -1,51 +1,84 @@
 <div class="card">
   <h2 class="card-title">Storico spese</h2>
 
+  <div class="filters">
+    <div class="form-group">
+      <label for="month">Mese</label>
+      <select id="month" [(ngModel)]="selectedMonth" (ngModelChange)="onFilterChange()" name="month">
+        @for (m of months; track m.value) {
+          <option [ngValue]="m.value">{{ m.label }}</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="year">Anno</label>
+      <select id="year" [(ngModel)]="selectedYear" (ngModelChange)="onFilterChange()" name="year">
+        <option [ngValue]="-1">Tutti</option>
+        @for (y of availableYears; track y) {
+          <option [ngValue]="y">{{ y }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
   @if (loading$ | async) {
     <div class="loading-center"><span class="spinner"></span></div>
   }
 
-  @if ((expenses$ | async); as expenses) {
-    @if (expenses.length === 0) {
-      <p class="empty-state">Nessuna spesa registrata.</p>
-    } @else {
-      <div class="table-wrapper">
-        <table class="data-table">
-          <thead>
+  @if (sortedExpenses.length === 0) {
+    <p class="empty-state">Nessuna spesa nel periodo selezionato.</p>
+  } @else {
+    <div class="results-info">
+      {{ sortedExpenses.length }} spese trovate
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="sortable" (click)="toggleSort('who')">Chi <span class="sort-icon">{{ getSortIcon('who') }}</span></th>
+            <th class="sortable" (click)="toggleSort('amount')">Importo <span class="sort-icon">{{ getSortIcon('amount') }}</span></th>
+            <th class="sortable" (click)="toggleSort('date')">Data <span class="sort-icon">{{ getSortIcon('date') }}</span></th>
+            <th class="sortable" (click)="toggleSort('where')">Dove <span class="sort-icon">{{ getSortIcon('where') }}</span></th>
+            <th class="sortable" (click)="toggleSort('category')">Categoria <span class="sort-icon">{{ getSortIcon('category') }}</span></th>
+            <th class="sortable" (click)="toggleSort('notes')">Note <span class="sort-icon">{{ getSortIcon('notes') }}</span></th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (expense of pagedExpenses; track expense.id) {
             <tr>
-              <th>Chi</th>
-              <th>Importo</th>
-              <th>Data</th>
-              <th>Dove</th>
-              <th>Categoria</th>
-              <th>Note</th>
-              <th>Azioni</th>
+              <td>{{ expense.who }}</td>
+              <td class="amount">{{ formatAmount(expense.amount) }}</td>
+              <td>{{ formatDate(expense.date) }}</td>
+              <td>{{ expense.where }}</td>
+              <td><span class="badge">{{ expense.category }}</span></td>
+              <td class="notes-cell">{{ expense.notes || '—' }}</td>
+              <td>
+                @if (deleteConfirmId === expense.id) {
+                  <div class="confirm-delete">
+                    <span>Confermi?</span>
+                    <button class="btn btn-danger btn-xs" (click)="deleteExpense(expense.id!)">Sì</button>
+                    <button class="btn btn-outline btn-xs" (click)="cancelDelete()">No</button>
+                  </div>
+                } @else {
+                  <button class="btn btn-danger btn-xs" (click)="confirmDelete(expense.id!)">Elimina</button>
+                }
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            @for (expense of expenses; track expense.id) {
-              <tr>
-                <td>{{ expense.who }}</td>
-                <td class="amount">{{ formatAmount(expense.amount) }}</td>
-                <td>{{ formatDate(expense.date) }}</td>
-                <td>{{ expense.where }}</td>
-                <td><span class="badge">{{ expense.category }}</span></td>
-                <td class="notes-cell">{{ expense.notes || '—' }}</td>
-                <td>
-                  @if (deleteConfirmId === expense.id) {
-                    <div class="confirm-delete">
-                      <span>Confermi?</span>
-                      <button class="btn btn-danger btn-xs" (click)="deleteExpense(expense.id!)">Sì</button>
-                      <button class="btn btn-outline btn-xs" (click)="cancelDelete()">No</button>
-                    </div>
-                  } @else {
-                    <button class="btn btn-danger btn-xs" (click)="confirmDelete(expense.id!)">Elimina</button>
-                  }
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages > 1) {
+      <div class="pagination">
+        <button class="btn btn-outline btn-sm" [disabled]="currentPage === 1" (click)="goToPage(1)">«</button>
+        <button class="btn btn-outline btn-sm" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">‹</button>
+        @for (p of visiblePages; track p) {
+          <button class="btn btn-sm" [class.btn-primary]="p === currentPage" [class.btn-outline]="p !== currentPage" (click)="goToPage(p)">{{ p }}</button>
+        }
+        <button class="btn btn-outline btn-sm" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">›</button>
+        <button class="btn btn-outline btn-sm" [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)">»</button>
       </div>
     }
   }

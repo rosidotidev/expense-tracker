@@ -1,3 +1,21 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filters .form-group {
+  flex: 1;
+  min-width: 140px;
+}
+
+.results-info {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+}
+
 .table-wrapper {
   overflow-x: auto;
 }
@@ -21,6 +39,22 @@
   font-size: 0.8rem;
   text-transform: uppercase;
   color: #555;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+th.sortable:hover {
+  background: #eef1f5;
+}
+
+.sort-icon {
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+  color: #999;
 }
 
 .amount {
@@ -59,10 +93,43 @@
   padding: 2rem 0;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 0.5px solid #e0e0e0;
+}
+
+.btn-sm {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8rem;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.btn-primary {
+  background: #185fa5;
+  color: #fff;
+  border: 1px solid #185fa5;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 @media (max-width: 600px) {
   .data-table th,
   .data-table td {
     padding: 0.4rem 0.5rem;
     font-size: 0.8rem;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
   }
 }
