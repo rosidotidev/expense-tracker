@@ -103,4 +103,15 @@ export class OverviewComponent implements OnInit {
       .map(([name, total]) => ({ name, total: total.toFixed(2) }))
       .sort((a, b) => parseFloat(b.total) - parseFloat(a.total));
   }
+
+  get perCategoryTotals(): { name: string; total: string }[] {
+    const map = new Map<string, number>();
+    this.filteredExpenses.forEach((e) => {
+      map.set(e.category, (map.get(e.category) || 0) + e.amount);
+    });
+    return Array.from(map.entries())
+      .filter(([, total]) => total > 0)
+      .map(([name, total]) => ({ name, total: total.toFixed(2) }))
+      .sort((a, b) => parseFloat(b.total) - parseFloat(a.total));
+  }
 }

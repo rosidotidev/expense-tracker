@@ -67,4 +67,16 @@
   } @else {
     <p class="empty-state">Nessuna spesa nel periodo selezionato.</p>
   }
+
+  @if (perCategoryTotals.length > 0) {
+    <h3 class="section-title">Totale per categoria</h3>
+    <div class="person-list">
+      @for (entry of perCategoryTotals; track entry.name) {
+        <div class="person-row">
+          <span class="person-name">{{ entry.name }}</span>
+          <span class="person-total">€{{ entry.total }}</span>
+        </div>
+      }
+    </div>
+  }
 </div>
