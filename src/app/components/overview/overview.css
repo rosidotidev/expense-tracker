@@ -1,0 +1,87 @@
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filters .form-group {
+  flex: 1;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-card {
+  border: 0.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+.metric-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+.metric-value {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #185fa5;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+  color: #333;
+}
+
+.person-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.person-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  border: 0.5px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.person-name {
+  font-weight: 500;
+}
+
+.person-total {
+  font-weight: 700;
+  color: #185fa5;
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 2rem 0;
+}
+
+@media (max-width: 500px) {
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+}

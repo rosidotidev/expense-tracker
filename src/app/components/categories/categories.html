@@ -1,0 +1,28 @@
+<div class="card">
+  <h2 class="card-title">Categorie</h2>
+
+  <div class="add-row">
+    <input
+      type="text"
+      [(ngModel)]="newCategory"
+      placeholder="Nome categoria"
+      (keydown.enter)="add()"
+    />
+    <button class="btn btn-primary" (click)="add()" [disabled]="loading">Aggiungi</button>
+  </div>
+
+  @if ((categories$ | async); as categories) {
+    @if (categories.length === 0) {
+      <p class="empty-state">Nessuna categoria.</p>
+    } @else {
+      <div class="chip-list">
+        @for (cat of categories; track cat) {
+          <span class="chip">
+            {{ cat }}
+            <button class="chip-remove" (click)="remove(cat)" aria-label="Rimuovi {{ cat }}">×</button>
+          </span>
+        }
+      </div>
+    }
+  }
+</div>

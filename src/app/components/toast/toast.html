@@ -1,0 +1,8 @@
+<div class="toast-container">
+  @for (msg of (messages$ | async); track msg.id) {
+    <div class="toast" [class.toast-success]="msg.type === 'success'" [class.toast-error]="msg.type === 'error'">
+      <span>{{ msg.text }}</span>
+      <button class="toast-close" (click)="dismiss(msg.id)" aria-label="Chiudi">×</button>
+    </div>
+  }
+</div>

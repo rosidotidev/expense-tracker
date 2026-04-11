@@ -1,0 +1,52 @@
+<div class="card">
+  <h2 class="card-title">Storico spese</h2>
+
+  @if (loading$ | async) {
+    <div class="loading-center"><span class="spinner"></span></div>
+  }
+
+  @if ((expenses$ | async); as expenses) {
+    @if (expenses.length === 0) {
+      <p class="empty-state">Nessuna spesa registrata.</p>
+    } @else {
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Chi</th>
+              <th>Importo</th>
+              <th>Data</th>
+              <th>Dove</th>
+              <th>Categoria</th>
+              <th>Note</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (expense of expenses; track expense.id) {
+              <tr>
+                <td>{{ expense.who }}</td>
+                <td class="amount">{{ formatAmount(expense.amount) }}</td>
+                <td>{{ formatDate(expense.date) }}</td>
+                <td>{{ expense.where }}</td>
+                <td><span class="badge">{{ expense.category }}</span></td>
+                <td class="notes-cell">{{ expense.notes || '—' }}</td>
+                <td>
+                  @if (deleteConfirmId === expense.id) {
+                    <div class="confirm-delete">
+                      <span>Confermi?</span>
+                      <button class="btn btn-danger btn-xs" (click)="deleteExpense(expense.id!)">Sì</button>
+                      <button class="btn btn-outline btn-xs" (click)="cancelDelete()">No</button>
+                    </div>
+                  } @else {
+                    <button class="btn btn-danger btn-xs" (click)="confirmDelete(expense.id!)">Elimina</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</div>

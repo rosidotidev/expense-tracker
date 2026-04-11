@@ -1,0 +1,28 @@
+<div class="card">
+  <h2 class="card-title">Persone</h2>
+
+  <div class="add-row">
+    <input
+      type="text"
+      [(ngModel)]="newPerson"
+      placeholder="Nome persona"
+      (keydown.enter)="add()"
+    />
+    <button class="btn btn-primary" (click)="add()" [disabled]="loading">Aggiungi</button>
+  </div>
+
+  @if ((people$ | async); as people) {
+    @if (people.length === 0) {
+      <p class="empty-state">Nessuna persona aggiunta.</p>
+    } @else {
+      <div class="chip-list">
+        @for (person of people; track person) {
+          <span class="chip">
+            {{ person }}
+            <button class="chip-remove" (click)="remove(person)" aria-label="Rimuovi {{ person }}">×</button>
+          </span>
+        }
+      </div>
+    }
+  }
+</div>

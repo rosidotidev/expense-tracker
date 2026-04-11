@@ -1,0 +1,45 @@
+<div class="layout">
+  <header class="header">
+    <div class="header-inner">
+      <span class="logo">💰 Gestione Spese</span>
+      <div class="header-right">
+        <span class="user-email">{{ userEmail }}</span>
+        <button class="btn btn-outline btn-sm" (click)="logout()" aria-label="Logout">Esci</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav-tabs">
+    <div class="nav-inner">
+      @for (tab of tabs; track tab.key) {
+        <button
+          class="tab-btn"
+          [class.active]="activeTab === tab.key"
+          (click)="setTab(tab.key)"
+        >
+          {{ tab.label }}
+        </button>
+      }
+    </div>
+  </nav>
+
+  <main class="main-content">
+    @switch (activeTab) {
+      @case ('registra') {
+        <app-expense-form />
+      }
+      @case ('storico') {
+        <app-expense-list />
+      }
+      @case ('riepilogo') {
+        <app-overview />
+      }
+      @case ('persone') {
+        <app-people />
+      }
+      @case ('categorie') {
+        <app-categories />
+      }
+    }
+  </main>
+</div>

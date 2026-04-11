@@ -1,0 +1,68 @@
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 0.5px solid #e0e0e0;
+}
+
+.data-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.amount {
+  font-weight: 600;
+  color: #185fa5;
+  white-space: nowrap;
+}
+
+.notes-cell {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #888;
+}
+
+.badge {
+  display: inline-block;
+  background: #e8f0fe;
+  color: #185fa5;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.confirm-delete {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 2rem 0;
+}
+
+@media (max-width: 600px) {
+  .data-table th,
+  .data-table td {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,47 @@
+.add-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.add-row input {
+  flex: 1;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #e8f0fe;
+  color: #185fa5;
+  padding: 0.35rem 0.65rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+}
+
+.chip-remove {
+  background: none;
+  border: none;
+  color: #185fa5;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.chip-remove:hover {
+  color: #d32f2f;
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+  padding: 2rem 0;
+}

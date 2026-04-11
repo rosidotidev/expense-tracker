@@ -1,0 +1,51 @@
+<div class="card">
+  <h2 class="card-title">Riepilogo</h2>
+
+  <div class="filters">
+    <div class="form-group">
+      <label for="month">Mese</label>
+      <select id="month" [(ngModel)]="selectedMonth" name="month">
+        @for (m of months; track m.value) {
+          <option [ngValue]="m.value">{{ m.label }}</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="year">Anno</label>
+      <select id="year" [(ngModel)]="selectedYear" name="year">
+        @for (y of availableYears; track y) {
+          <option [ngValue]="y">{{ y }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric-card">
+      <span class="metric-label">Totale spese</span>
+      <span class="metric-value">€{{ totalAmount }}</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-label">Numero spese</span>
+      <span class="metric-value">{{ expenseCount }}</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-label">Media per spesa</span>
+      <span class="metric-value">€{{ averageAmount }}</span>
+    </div>
+  </div>
+
+  @if (perPersonTotals.length > 0) {
+    <h3 class="section-title">Totale per persona</h3>
+    <div class="person-list">
+      @for (entry of perPersonTotals; track entry.name) {
+        <div class="person-row">
+          <span class="person-name">{{ entry.name }}</span>
+          <span class="person-total">€{{ entry.total }}</span>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="empty-state">Nessuna spesa nel periodo selezionato.</p>
+  }
+</div>
