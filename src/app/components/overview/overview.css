@@ -1,11 +1,13 @@
 .filters {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
 .filters .form-group {
   flex: 1;
+  min-width: 140px;
 }
 
 .metrics {

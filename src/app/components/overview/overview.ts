@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ExpenseService } from '../../services/expense.service';
+import { PeopleService } from '../../services/people.service';
+import { CategoryService } from '../../services/category.service';
 import { Expense } from '../../models/expense.model';
 
 @Component({
@@ -13,9 +15,13 @@ import { Expense } from '../../models/expense.model';
 })
 export class OverviewComponent implements OnInit {
   expenses: Expense[] = [];
+  people: string[] = [];
+  categories: string[] = [];
 
   selectedMonth: number;
   selectedYear: number;
+  selectedPerson = '';
+  selectedCategory = '';
   availableYears: number[] = [];
 
   months = [
@@ -34,7 +40,11 @@ export class OverviewComponent implements OnInit {
     { value: 11, label: 'Dicembre' }
   ];
 
-  constructor(private expenseService: ExpenseService) {
+  constructor(
+    private expenseService: ExpenseService,
+    private peopleService: PeopleService,
+    private categoryService: CategoryService
+  ) {
     const now = new Date();
     this.selectedMonth = now.getMonth();
     this.selectedYear = now.getFullYear();
@@ -45,6 +55,8 @@ export class OverviewComponent implements OnInit {
       this.expenses = expenses;
       this.updateAvailableYears();
     });
+    this.peopleService.people$.subscribe((people) => (this.people = people));
+    this.categoryService.categories$.subscribe((categories) => (this.categories = categories));
   }
 
   private updateAvailableYears(): void {
@@ -60,9 +72,11 @@ export class OverviewComponent implements OnInit {
   get filteredExpenses(): Expense[] {
     return this.expenses.filter((e) => {
       const d = new Date(e.date);
-      const matchYear = d.getFullYear() === this.selectedYear;
+      const matchYear = this.selectedYear === -1 || d.getFullYear() === this.selectedYear;
       const matchMonth = this.selectedMonth === -1 || d.getMonth() === this.selectedMonth;
-      return matchYear && matchMonth;
+      const matchPerson = !this.selectedPerson || e.who === this.selectedPerson;
+      const matchCategory = !this.selectedCategory || e.category === this.selectedCategory;
+      return matchYear && matchMonth && matchPerson && matchCategory;
     });
   }
 

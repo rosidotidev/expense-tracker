@@ -13,8 +13,27 @@
     <div class="form-group">
       <label for="year">Anno</label>
       <select id="year" [(ngModel)]="selectedYear" name="year">
+        <option [ngValue]="-1">Tutti</option>
         @for (y of availableYears; track y) {
           <option [ngValue]="y">{{ y }}</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="person">Persona</label>
+      <select id="person" [(ngModel)]="selectedPerson" name="person">
+        <option value="">Tutte</option>
+        @for (p of people; track p) {
+          <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="category">Categoria</label>
+      <select id="category" [(ngModel)]="selectedCategory" name="category">
+        <option value="">Tutte</option>
+        @for (c of categories; track c) {
+          <option [value]="c">{{ c }}</option>
         }
       </select>
     </div>
