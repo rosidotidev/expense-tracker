@@ -1,16 +1,19 @@
 <div class="card">
-  <h2 class="card-title">Registra spesa</h2>
+  <h2 class="card-title">Nuova spesa</h2>
 
-  <form (ngSubmit)="submit()" class="expense-form">
-    <div class="form-row">
-      <div class="form-group">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="expense-form">
+    <div class="form-grid">
+      <div class="form-group who-field">
         <label for="who">Chi ha speso *</label>
-        <select id="who" [(ngModel)]="who" name="who" required>
+        <select id="who" formControlName="who" [class.invalid]="submitted && f.who.invalid">
           <option value="" disabled>Seleziona persona</option>
-          @for (person of people; track person) {
+          @for (person of people(); track person) {
             <option [value]="person">{{ person }}</option>
           }
         </select>
+        @if (submitted && f.who.invalid) {
+          <span class="field-error">Seleziona chi ha speso</span>
+        }
       </div>
 
       <div class="form-group">
@@ -18,20 +21,28 @@
         <input
           id="amount"
           type="number"
-          [(ngModel)]="amount"
-          name="amount"
+          formControlName="amount"
           step="0.01"
           min="0"
           placeholder="0.00"
-          required
+          [class.invalid]="submitted && f.amount.invalid"
         />
+        @if (submitted && f.amount.invalid) {
+          <span class="field-error">Inserisci un importo valido</span>
+        }
       </div>
-    </div>
 
-    <div class="form-row">
       <div class="form-group">
         <label for="date">Giorno *</label>
-        <input id="date" type="date" [(ngModel)]="date" name="date" required />
+        <input
+          id="date"
+          type="date"
+          formControlName="date"
+          [class.invalid]="submitted && f.date.invalid"
+        />
+        @if (submitted && f.date.invalid) {
+          <span class="field-error">Inserisci una data</span>
+        }
       </div>
 
       <div class="form-group">
@@ -39,33 +50,37 @@
         <input
           id="where"
           type="text"
-          [(ngModel)]="where"
-          name="where"
+          formControlName="where"
           placeholder="Es. Supermercato"
-          required
+          [class.invalid]="submitted && f.where.invalid"
         />
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="category">Categoria *</label>
-      <select id="category" [(ngModel)]="category" name="category" required>
-        <option value="" disabled>Seleziona categoria</option>
-        @for (cat of categories; track cat) {
-          <option [value]="cat">{{ cat }}</option>
+        @if (submitted && f.where.invalid) {
+          <span class="field-error">Inserisci dove</span>
         }
-      </select>
-    </div>
+      </div>
 
-    <div class="form-group">
-      <label for="notes">Note</label>
-      <textarea
-        id="notes"
-        [(ngModel)]="notes"
-        name="notes"
-        rows="2"
-        placeholder="Note aggiuntive (opzionale)"
-      ></textarea>
+      <div class="form-group category-field">
+        <label for="category">Categoria *</label>
+        <select id="category" formControlName="category" [class.invalid]="submitted && f.category.invalid">
+          <option value="" disabled>Seleziona categoria</option>
+          @for (cat of categories(); track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+        @if (submitted && f.category.invalid) {
+          <span class="field-error">Seleziona una categoria</span>
+        }
+      </div>
+
+      <div class="form-group notes-field">
+        <label for="notes">Note</label>
+        <textarea
+          id="notes"
+          formControlName="notes"
+          rows="2"
+          placeholder="Note aggiuntive (opzionale)"
+        ></textarea>
+      </div>
     </div>
 
     <div class="form-actions">

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ExpenseService } from '../../services/expense.service';
 import { PeopleService } from '../../services/people.service';
 import { CategoryService } from '../../services/category.service';
@@ -9,66 +10,59 @@ import { ToastService } from '../../services/toast.service';
 @Component({
   selector: 'app-expense-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './expense-form.html',
   styleUrl: './expense-form.css'
 })
-export class ExpenseFormComponent implements OnInit {
-  who = '';
-  amount: number | null = null;
-  date = '';
-  where = '';
-  category = '';
-  notes = '';
+export class ExpenseFormComponent {
   loading = false;
+  submitted = false;
 
-  people: string[] = [];
-  categories: string[] = [];
+  people: Signal<string[]>;
+  categories: Signal<string[]>;
+
+  form;
 
   constructor(
+    private fb: FormBuilder,
     private expenseService: ExpenseService,
     private peopleService: PeopleService,
     private categoryService: CategoryService,
     private toast: ToastService
-  ) {}
+  ) {
+    this.people = toSignal(this.peopleService.people$, { initialValue: [] as string[] });
+    this.categories = toSignal(this.categoryService.categories$, { initialValue: [] as string[] });
+    this.form = this.fb.group({
+      who: ['', Validators.required],
+      amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
+      date: [this.todayString(), Validators.required],
+      where: ['', Validators.required],
+      category: ['', Validators.required],
+      notes: ['']
+    });
+  }
 
-  ngOnInit(): void {
-    this.date = this.todayString();
-    this.peopleService.people$.subscribe((p) => (this.people = p));
-    this.categoryService.categories$.subscribe((c) => (this.categories = c));
+  get f() {
+    return this.form.controls;
   }
 
   async submit(): Promise<void> {
-    if (!this.who) {
-      this.toast.show('Seleziona chi ha speso', 'error');
-      return;
-    }
-    if (!this.amount || this.amount <= 0) {
-      this.toast.show('Inserisci un importo valido', 'error');
-      return;
-    }
-    if (!this.date) {
-      this.toast.show('Inserisci una data', 'error');
-      return;
-    }
-    if (!this.where.trim()) {
-      this.toast.show('Inserisci dove', 'error');
-      return;
-    }
-    if (!this.category) {
-      this.toast.show('Seleziona una categoria', 'error');
+    this.submitted = true;
+    if (this.form.invalid) {
+      this.toast.show('Compila tutti i campi obbligatori', 'error');
       return;
     }
 
+    const value = this.form.getRawValue();
     this.loading = true;
     try {
       await this.expenseService.addExpense({
-        who: this.who,
-        amount: parseFloat(this.amount.toFixed(2)),
-        date: this.date,
-        where: this.where.trim(),
-        category: this.category,
-        notes: this.notes.trim()
+        who: value.who!,
+        amount: parseFloat(value.amount!.toFixed(2)),
+        date: value.date!,
+        where: value.where!.trim(),
+        category: value.category!,
+        notes: (value.notes ?? '').trim()
       });
       this.toast.show('Spesa aggiunta!');
       this.reset();
@@ -80,12 +74,15 @@ export class ExpenseFormComponent implements OnInit {
   }
 
   reset(): void {
-    this.who = '';
-    this.amount = null;
-    this.date = this.todayString();
-    this.where = '';
-    this.category = '';
-    this.notes = '';
+    this.submitted = false;
+    this.form.reset({
+      who: '',
+      amount: null,
+      date: this.todayString(),
+      where: '',
+      category: '',
+      notes: ''
+    });
   }
 
   private todayString(): string {
