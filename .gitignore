@@ -47,6 +47,13 @@ Thumbs.db
 /src/environments/environment.ts
 /src/environments/environment.prod.ts
 firebase_setup.md
+.env
+/backup/
 
 # GitHub Pages build output
 /docs
+
+# Tooling and local scripts
+/.claude/
+/.specify/
+*.bat
