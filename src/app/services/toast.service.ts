@@ -17,7 +17,7 @@ export class ToastService {
     const id = ++this.counter;
     const msg: ToastMessage = { text, type, id };
     this.messagesSubject.next([...this.messagesSubject.value, msg]);
-    setTimeout(() => this.dismiss(id), 3500);
+    setTimeout(() => this.dismiss(id), 2000);
   }
 
   dismiss(id: number): void {

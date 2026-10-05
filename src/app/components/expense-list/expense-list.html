@@ -100,6 +100,48 @@
       </table>
     </div>
 
+    <div class="expense-cards">
+      @for (expense of pagedExpenses; track expense.id) {
+        <div class="expense-card">
+          <div class="card-row">
+            <span class="card-who">{{ expense.who }}</span>
+            <span class="amount">{{ formatAmount(expense.amount) }}</span>
+          </div>
+          <div class="card-row">
+            <span class="card-where">{{ expense.where }}</span>
+            <span class="card-meta">{{ formatDate(expense.date) }}</span>
+          </div>
+          <div class="card-row">
+            <span class="badge" [ngClass]="categoryBadgeClass(expense.category)">{{ expense.category }}</span>
+          </div>
+          @if (expense.notes) {
+            <div class="card-notes">{{ expense.notes }}</div>
+          }
+          <div class="card-actions">
+            <button
+              type="button"
+              class="btn btn-xs"
+              [class.btn-primary]="expense.recurrent"
+              [class.btn-outline]="!expense.recurrent"
+              [attr.aria-pressed]="!!expense.recurrent"
+              (click)="toggleRecurrent(expense)"
+            >
+              ↻ Ricorrente
+            </button>
+            @if (deleteConfirmId === expense.id) {
+              <div class="confirm-delete">
+                <span>Confermi?</span>
+                <button class="btn btn-danger btn-xs" (click)="deleteExpense(expense.id!)">Sì</button>
+                <button class="btn btn-outline btn-xs" (click)="cancelDelete()">No</button>
+              </div>
+            } @else {
+              <button class="btn btn-danger btn-xs" (click)="confirmDelete(expense.id!)">Elimina</button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
     @if (totalPages > 1) {
       <div class="pagination">
         <button class="btn btn-outline btn-sm" [disabled]="currentPage === 1" (click)="goToPage(1)">«</button>
