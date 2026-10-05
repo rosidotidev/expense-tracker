@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { ExpenseService } from '../../services/expense.service';
 import { PeopleService } from '../../services/people.service';
 import { CategoryService } from '../../services/category.service';
@@ -13,10 +14,12 @@ import { Expense } from '../../models/expense.model';
   templateUrl: './overview.html',
   styleUrl: './overview.css'
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit, OnDestroy {
   expenses: Expense[] = [];
   people: string[] = [];
   categories: string[] = [];
+  loading = false;
+  private querySub: Subscription | null = null;
 
   selectedMonth: number;
   selectedYear: number;
@@ -51,32 +54,44 @@ export class OverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.expenseService.expenses$.subscribe((expenses) => {
-      this.expenses = expenses;
-      this.updateAvailableYears();
-    });
     this.peopleService.people$.subscribe((people) => (this.people = people));
     this.categoryService.categories$.subscribe((categories) => (this.categories = categories));
+    this.expenseService.expenses$.subscribe((expenses) => {
+      const years = new Set<number>();
+      years.add(new Date().getFullYear());
+      expenses.forEach((e) => {
+        const y = new Date(e.date).getFullYear();
+        if (!isNaN(y)) years.add(y);
+      });
+      this.availableYears = Array.from(years).sort((a, b) => b - a);
+    });
+    this.loadData();
   }
 
-  private updateAvailableYears(): void {
-    const years = new Set<number>();
-    years.add(new Date().getFullYear());
-    this.expenses.forEach((e) => {
-      const y = new Date(e.date).getFullYear();
-      if (!isNaN(y)) years.add(y);
+  ngOnDestroy(): void {
+    this.querySub?.unsubscribe();
+  }
+
+  onPeriodChange(): void {
+    this.loadData();
+  }
+
+  onLocalFilterChange(): void {}
+
+  private loadData(): void {
+    this.loading = true;
+    this.querySub?.unsubscribe();
+    this.querySub = this.expenseService.queryExpenses(this.selectedYear, this.selectedMonth).subscribe((expenses) => {
+      this.expenses = expenses;
+      this.loading = false;
     });
-    this.availableYears = Array.from(years).sort((a, b) => b - a);
   }
 
   get filteredExpenses(): Expense[] {
     return this.expenses.filter((e) => {
-      const d = new Date(e.date);
-      const matchYear = this.selectedYear === -1 || d.getFullYear() === this.selectedYear;
-      const matchMonth = this.selectedMonth === -1 || d.getMonth() === this.selectedMonth;
       const matchPerson = !this.selectedPerson || e.who === this.selectedPerson;
       const matchCategory = !this.selectedCategory || e.category === this.selectedCategory;
-      return matchYear && matchMonth && matchPerson && matchCategory;
+      return matchPerson && matchCategory;
     });
   }
 

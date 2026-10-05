@@ -109,6 +109,26 @@ export class MockFirebaseService {
     return this.listen(path);
   }
 
+  listenRange(path: string, orderBy: string, start: string, end: string): Observable<any> {
+    return new Observable((subscriber) => {
+      const subject = this.getOrCreateSubject(path);
+      const sub = subject.subscribe((snapshot) => {
+        const data = snapshot.val();
+        const filtered: Record<string, any> = {};
+        if (data) {
+          for (const [key, val] of Object.entries(data)) {
+            const fieldValue = (val as any)[orderBy];
+            if (fieldValue >= start && fieldValue <= end) {
+              filtered[key] = val;
+            }
+          }
+        }
+        this.ngZone.run(() => subscriber.next(new MockDataSnapshot(filtered)));
+      });
+      return () => sub.unsubscribe();
+    });
+  }
+
   // --- Internal helpers ---
 
   private getOrCreateSubject(path: string): BehaviorSubject<MockDataSnapshot> {

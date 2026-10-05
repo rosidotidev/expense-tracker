@@ -3,18 +3,22 @@
     <h1 class="login-title">💰 Gestione Spese</h1>
     <h2 class="login-subtitle">Accedi</h2>
 
-    <form (ngSubmit)="submit()" class="login-form">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
       <div class="form-group">
         <label for="email">Email</label>
         <input
           id="email"
           type="email"
-          [(ngModel)]="email"
-          name="email"
+          formControlName="email"
           placeholder="email&#64;esempio.com"
           autocomplete="email"
-          required
+          [class.invalid]="submitted && email.invalid"
         />
+        @if (submitted && email.hasError('required')) {
+          <span class="field-error">Email obbligatoria</span>
+        } @else if (submitted && email.hasError('email')) {
+          <span class="field-error">Email non valida</span>
+        }
       </div>
 
       <div class="form-group">
@@ -22,12 +26,16 @@
         <input
           id="password"
           type="password"
-          [(ngModel)]="password"
-          name="password"
+          formControlName="password"
           placeholder="Password"
           autocomplete="current-password"
-          required
+          [class.invalid]="submitted && password.invalid"
         />
+        @if (submitted && password.hasError('required')) {
+          <span class="field-error">Password obbligatoria</span>
+        } @else if (submitted && password.hasError('minlength')) {
+          <span class="field-error">Minimo 6 caratteri</span>
+        }
       </div>
 
       <button type="submit" class="btn btn-primary btn-full" [disabled]="loading">

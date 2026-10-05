@@ -19,6 +19,8 @@ import {
   onValue,
   query,
   orderByChild,
+  startAt,
+  endAt,
   DataSnapshot
 } from 'firebase/database';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -108,6 +110,22 @@ export class FirebaseService {
   listenOrdered(path: string, orderBy: string): Observable<DataSnapshot> {
     return new Observable((subscriber) => {
       const dbRef = query(ref(this.db, path), orderByChild(orderBy));
+      const unsubscribe = onValue(
+        dbRef,
+        (snapshot) => {
+          this.ngZone.run(() => subscriber.next(snapshot));
+        },
+        (error) => {
+          this.ngZone.run(() => subscriber.error(error));
+        }
+      );
+      return () => unsubscribe();
+    });
+  }
+
+  listenRange(path: string, orderBy: string, start: string, end: string): Observable<DataSnapshot> {
+    return new Observable((subscriber) => {
+      const dbRef = query(ref(this.db, path), orderByChild(orderBy), startAt(start), endAt(end));
       const unsubscribe = onValue(
         dbRef,
         (snapshot) => {

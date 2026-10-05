@@ -4,7 +4,7 @@
   <div class="filters">
     <div class="form-group">
       <label for="month">Mese</label>
-      <select id="month" [(ngModel)]="selectedMonth" name="month">
+      <select id="month" [(ngModel)]="selectedMonth" (ngModelChange)="onPeriodChange()" name="month">
         @for (m of months; track m.value) {
           <option [ngValue]="m.value">{{ m.label }}</option>
         }
@@ -12,7 +12,7 @@
     </div>
     <div class="form-group">
       <label for="year">Anno</label>
-      <select id="year" [(ngModel)]="selectedYear" name="year">
+      <select id="year" [(ngModel)]="selectedYear" (ngModelChange)="onPeriodChange()" name="year">
         <option [ngValue]="-1">Tutti</option>
         @for (y of availableYears; track y) {
           <option [ngValue]="y">{{ y }}</option>
@@ -21,7 +21,7 @@
     </div>
     <div class="form-group">
       <label for="person">Persona</label>
-      <select id="person" [(ngModel)]="selectedPerson" name="person">
+      <select id="person" [(ngModel)]="selectedPerson" (ngModelChange)="onLocalFilterChange()" name="person">
         <option value="">Tutte</option>
         @for (p of people; track p) {
           <option [value]="p">{{ p }}</option>
@@ -30,7 +30,7 @@
     </div>
     <div class="form-group">
       <label for="category">Categoria</label>
-      <select id="category" [(ngModel)]="selectedCategory" name="category">
+      <select id="category" [(ngModel)]="selectedCategory" (ngModelChange)="onLocalFilterChange()" name="category">
         <option value="">Tutte</option>
         @for (c of categories; track c) {
           <option [value]="c">{{ c }}</option>
@@ -38,6 +38,10 @@
       </select>
     </div>
   </div>
+
+  @if (loading) {
+    <div class="loading-center"><span class="spinner"></span></div>
+  }
 
   <div class="metrics">
     <div class="metric-card">
@@ -49,14 +53,14 @@
       <span class="metric-value">{{ expenseCount }}</span>
     </div>
     <div class="metric-card">
-      <span class="metric-label">Media per spesa</span>
+      <span class="metric-label">Spesa media</span>
       <span class="metric-value">€{{ averageAmount }}</span>
     </div>
   </div>
 
   @if (perPersonTotals.length > 0) {
     <h3 class="section-title">Totale per persona</h3>
-    <div class="person-list">
+    <div class="person-list person-list-colored">
       @for (entry of perPersonTotals; track entry.name) {
         <div class="person-row">
           <span class="person-name">{{ entry.name }}</span>
@@ -70,7 +74,7 @@
 
   @if (perCategoryTotals.length > 0) {
     <h3 class="section-title">Totale per categoria</h3>
-    <div class="person-list">
+    <div class="person-list category-list-colored">
       @for (entry of perCategoryTotals; track entry.name) {
         <div class="person-row">
           <span class="person-name">{{ entry.name }}</span>

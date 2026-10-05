@@ -1,7 +1,21 @@
-.form-row {
+/*
+ * Fields: Chi ha speso, Quanto, Giorno, Dove, Categoria, Note.
+ * Wide screens: who|amount, date|where, category (full row), notes (full row).
+ * Phones: who (full row), amount|date, where|category, notes (full row).
+ */
+.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  column-gap: 1rem;
+}
+
+.form-grid .form-group {
+  min-width: 0;
+}
+
+.category-field,
+.notes-field {
+  grid-column: 1 / -1;
 }
 
 .form-actions {
@@ -11,7 +25,11 @@
 }
 
 @media (max-width: 500px) {
-  .form-row {
-    grid-template-columns: 1fr;
+  .who-field {
+    grid-column: 1 / -1;
+  }
+
+  .category-field {
+    grid-column: auto;
   }
 }

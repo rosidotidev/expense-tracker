@@ -8,6 +8,7 @@
 .filters .form-group {
   flex: 1;
   min-width: 140px;
+  margin-bottom: 0;
 }
 
 .metrics {
@@ -18,33 +19,36 @@
 }
 
 .metric-card {
-  border: 0.5px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: var(--radius-lg);
+  padding: 1.1rem;
   text-align: center;
-  background: #f8f9fa;
+  color: #fff;
+  background: linear-gradient(135deg, var(--coral), var(--amber));
 }
 
 .metric-label {
   display: block;
-  font-size: 0.8rem;
-  color: #666;
-  margin-bottom: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.9;
+  margin-bottom: 0.4rem;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .metric-value {
   display: block;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #185fa5;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
 }
 
 .section-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.75rem;
-  color: #333;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 1.25rem 0 0.75rem;
+  color: var(--ink);
 }
 
 .person-list {
@@ -57,33 +61,76 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.65rem 0.75rem;
-  border: 0.5px solid #e0e0e0;
-  border-radius: 8px;
-  background: #fff;
-}
-
-.person-name {
-  font-weight: 500;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  font-weight: 700;
 }
 
 .person-total {
-  font-weight: 700;
-  color: #185fa5;
+  font-weight: 800;
+  color: var(--violet);
 }
 
-.empty-state {
-  text-align: center;
-  color: #999;
-  padding: 2rem 0;
+.person-list-colored .person-row {
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  color: #fff;
+}
+
+.person-list-colored .person-total {
+  color: #fff;
+}
+
+.category-list-colored .person-row {
+  background: linear-gradient(135deg, var(--teal), #5fd8c0);
+  color: #fff;
+}
+
+.category-list-colored .person-total {
+  color: #fff;
 }
 
 @media (max-width: 500px) {
-  .metrics {
-    grid-template-columns: 1fr;
+  /* Filters: 2 per row, two rows */
+  .filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
   }
 
-  .filters {
+  .filters .form-group {
+    min-width: 0;
+  }
+
+  /* Metrics: Totale spese on its own row, then Numero spese and Spesa media */
+  .metrics {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .metric-card:nth-child(1) {
+    grid-column: 1 / -1;
+  }
+
+  /* Per person / per category: 2 widgets per row */
+  .person-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .person-row {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    min-width: 0;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .person-name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

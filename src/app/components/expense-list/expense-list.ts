@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { ExpenseService } from '../../services/expense.service';
+import { PeopleService } from '../../services/people.service';
+import { CategoryService } from '../../services/category.service';
 import { ToastService } from '../../services/toast.service';
 import { Expense } from '../../models/expense.model';
 
@@ -15,15 +18,20 @@ type SortDir = 'asc' | 'desc';
   templateUrl: './expense-list.html',
   styleUrl: './expense-list.css'
 })
-export class ExpenseListComponent implements OnInit {
-  expenses: Expense[] = [];
-  loading$;
+export class ExpenseListComponent implements OnInit, OnDestroy {
+  allExpenses: Expense[] = [];
+  loading = false;
   deleteConfirmId: string | null = null;
+  private querySub: Subscription | null = null;
 
   // Filters
   selectedMonth: number;
   selectedYear: number;
+  selectedPerson = '';
+  selectedCategory = '';
   availableYears: number[] = [];
+  people: string[] = [];
+  categories: string[] = [];
 
   months = [
     { value: -1, label: 'Tutti' },
@@ -51,37 +59,57 @@ export class ExpenseListComponent implements OnInit {
 
   constructor(
     private expenseService: ExpenseService,
+    private peopleService: PeopleService,
+    private categoryService: CategoryService,
     private toast: ToastService
   ) {
     const now = new Date();
     this.selectedMonth = now.getMonth();
     this.selectedYear = now.getFullYear();
-    this.loading$ = this.expenseService.loading$;
   }
 
   ngOnInit(): void {
+    this.peopleService.people$.subscribe((p) => (this.people = p));
+    this.categoryService.categories$.subscribe((c) => (this.categories = c));
     this.expenseService.expenses$.subscribe((expenses) => {
-      this.expenses = expenses;
-      this.updateAvailableYears();
+      const years = new Set<number>();
+      years.add(new Date().getFullYear());
+      expenses.forEach((e) => {
+        const y = new Date(e.date).getFullYear();
+        if (!isNaN(y)) years.add(y);
+      });
+      this.availableYears = Array.from(years).sort((a, b) => b - a);
     });
+    this.loadData();
   }
 
-  private updateAvailableYears(): void {
-    const years = new Set<number>();
-    years.add(new Date().getFullYear());
-    this.expenses.forEach((e) => {
-      const y = new Date(e.date).getFullYear();
-      if (!isNaN(y)) years.add(y);
+  ngOnDestroy(): void {
+    this.querySub?.unsubscribe();
+  }
+
+  onPeriodChange(): void {
+    this.currentPage = 1;
+    this.loadData();
+  }
+
+  onLocalFilterChange(): void {
+    this.currentPage = 1;
+  }
+
+  private loadData(): void {
+    this.loading = true;
+    this.querySub?.unsubscribe();
+    this.querySub = this.expenseService.queryExpenses(this.selectedYear, this.selectedMonth).subscribe((expenses) => {
+      this.allExpenses = expenses;
+      this.loading = false;
     });
-    this.availableYears = Array.from(years).sort((a, b) => b - a);
   }
 
   get filteredExpenses(): Expense[] {
-    return this.expenses.filter((e) => {
-      const d = new Date(e.date);
-      const matchYear = this.selectedYear === -1 || d.getFullYear() === this.selectedYear;
-      const matchMonth = this.selectedMonth === -1 || d.getMonth() === this.selectedMonth;
-      return matchYear && matchMonth;
+    return this.allExpenses.filter((e) => {
+      const matchPerson = !this.selectedPerson || e.who === this.selectedPerson;
+      const matchCategory = !this.selectedCategory || e.category === this.selectedCategory;
+      return matchPerson && matchCategory;
     });
   }
 
@@ -126,10 +154,6 @@ export class ExpenseListComponent implements OnInit {
     return pages;
   }
 
-  onFilterChange(): void {
-    this.currentPage = 1;
-  }
-
   toggleSort(key: SortKey): void {
     if (this.sortKey === key) {
       this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
@@ -158,6 +182,14 @@ export class ExpenseListComponent implements OnInit {
 
   formatAmount(amount: number): string {
     return `€${amount.toFixed(2)}`;
+  }
+
+  categoryBadgeClass(category: string): string {
+    let hash = 0;
+    for (let i = 0; i < category.length; i++) {
+      hash = (hash * 31 + category.charCodeAt(i)) >>> 0;
+    }
+    return `badge-${hash % 6}`;
   }
 
   confirmDelete(id: string): void {

@@ -4,7 +4,7 @@
   <div class="filters">
     <div class="form-group">
       <label for="month">Mese</label>
-      <select id="month" [(ngModel)]="selectedMonth" (ngModelChange)="onFilterChange()" name="month">
+      <select id="month" [(ngModel)]="selectedMonth" (ngModelChange)="onPeriodChange()" name="month">
         @for (m of months; track m.value) {
           <option [ngValue]="m.value">{{ m.label }}</option>
         }
@@ -12,16 +12,34 @@
     </div>
     <div class="form-group">
       <label for="year">Anno</label>
-      <select id="year" [(ngModel)]="selectedYear" (ngModelChange)="onFilterChange()" name="year">
+      <select id="year" [(ngModel)]="selectedYear" (ngModelChange)="onPeriodChange()" name="year">
         <option [ngValue]="-1">Tutti</option>
         @for (y of availableYears; track y) {
           <option [ngValue]="y">{{ y }}</option>
         }
       </select>
     </div>
+    <div class="form-group">
+      <label for="person">Persona</label>
+      <select id="person" [(ngModel)]="selectedPerson" (ngModelChange)="onLocalFilterChange()" name="person">
+        <option value="">Tutte</option>
+        @for (p of people; track p) {
+          <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="category">Categoria</label>
+      <select id="category" [(ngModel)]="selectedCategory" (ngModelChange)="onLocalFilterChange()" name="category">
+        <option value="">Tutte</option>
+        @for (c of categories; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
   </div>
 
-  @if (loading$ | async) {
+  @if (loading) {
     <div class="loading-center"><span class="spinner"></span></div>
   }
 
@@ -51,7 +69,7 @@
               <td class="amount">{{ formatAmount(expense.amount) }}</td>
               <td>{{ formatDate(expense.date) }}</td>
               <td>{{ expense.where }}</td>
-              <td><span class="badge">{{ expense.category }}</span></td>
+              <td><span class="badge" [ngClass]="categoryBadgeClass(expense.category)">{{ expense.category }}</span></td>
               <td class="notes-cell">{{ expense.notes || '—' }}</td>
               <td>
                 @if (deleteConfirmId === expense.id) {
