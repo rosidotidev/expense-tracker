@@ -54,6 +54,6 @@ firebase_setup.md
 /docs
 
 # Tooling and local scripts
-/.claude/
-/.specify/
+.claude/*.lock
+.claude/settings.local.json
 *.bat
