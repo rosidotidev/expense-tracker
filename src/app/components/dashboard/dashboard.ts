@@ -52,6 +52,7 @@ export class DashboardComponent implements OnInit {
     this.expenseService.listenExpenses();
     this.peopleService.listenPeople();
     this.categoryService.listenCategories();
+    void this.expenseService.ensureRecurringForCurrentMonth();
   }
 
   setTab(tab: Tab): void {

@@ -144,3 +144,35 @@ th.sortable:hover {
     flex-wrap: wrap;
   }
 }
+
+.recur-cell {
+  width: 1%;
+  text-align: center;
+  white-space: nowrap;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}
+
+.recur-btn {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--ink-dim);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.recur-btn:hover {
+  border-color: var(--violet);
+  color: var(--violet);
+}
+
+.recur-btn.on {
+  background: var(--violet);
+  border-color: var(--violet);
+  color: #fff;
+}

@@ -8,4 +8,5 @@ export interface Expense {
   notes: string;
   uid: string;
   createdAt: number;
+  recurrent?: boolean; // stored only as true; absent means not recurrent
 }

@@ -38,7 +38,8 @@ export class ExpenseFormComponent {
       date: [this.todayString(), Validators.required],
       where: ['', Validators.required],
       category: ['', Validators.required],
-      notes: ['']
+      notes: [''],
+      recurrent: [false]
     });
   }
 
@@ -62,7 +63,8 @@ export class ExpenseFormComponent {
         date: value.date!,
         where: value.where!.trim(),
         category: value.category!,
-        notes: (value.notes ?? '').trim()
+        notes: (value.notes ?? '').trim(),
+        recurrent: value.recurrent === true
       });
       this.toast.show('Spesa aggiunta!');
       this.reset();
@@ -81,7 +83,8 @@ export class ExpenseFormComponent {
       date: this.todayString(),
       where: '',
       category: '',
-      notes: ''
+      notes: '',
+      recurrent: false
     });
   }
 

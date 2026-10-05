@@ -27,6 +27,7 @@ Built with **Angular 21** (standalone components, zoneless) and **Firebase** (Au
 - **Summary** (*Riepilogo*) — Statistics filterable by month, year, person and category: total, number of expenses, average, total per person.
 - **People** (*Persone*) — Add and remove the people who share the expenses.
 - **Categories** (*Categorie*) — Manage categories (6 defaults: Food, Transport, Entertainment, Housing, Shopping, Other).
+- **Recurring expenses** — Mark an expense as *Recurrent* when adding it, or toggle the flag from *Storico* (shown with a "Recurrent" badge). At login, if the current month has no recurrent expense, the recurrent expenses of the previous month are copied into it (same day of the month, or the last day when it does not exist). The check runs once per session and reads only the previous and current month. Known limits: if the app is not opened for a whole month nothing is copied the next month; if all recurrent expenses are removed from the current month, they are copied again at the next login of the same month.
 - **Real time** — Data is updated live on every open device.
 - **Multi-user** — Each user only sees their own data (isolation by Firebase UID, enforced by the database rules).
 - **Responsive** — Works on desktop, tablet and phone.
@@ -189,6 +190,7 @@ users/
         notes: string
         uid: string
         createdAt: number
+        recurrent?: true   (optional; absent = not recurrent)
     people/
       {key}: string
     categories/

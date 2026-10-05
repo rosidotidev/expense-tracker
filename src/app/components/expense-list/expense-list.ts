@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -19,8 +19,8 @@ type SortDir = 'asc' | 'desc';
   styleUrl: './expense-list.css'
 })
 export class ExpenseListComponent implements OnInit, OnDestroy {
-  allExpenses: Expense[] = [];
-  loading = false;
+  allExpenses = signal<Expense[]>([]);
+  loading = signal(false);
   deleteConfirmId: string | null = null;
   private querySub: Subscription | null = null;
 
@@ -97,16 +97,16 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
   }
 
   private loadData(): void {
-    this.loading = true;
+    this.loading.set(true);
     this.querySub?.unsubscribe();
     this.querySub = this.expenseService.queryExpenses(this.selectedYear, this.selectedMonth).subscribe((expenses) => {
-      this.allExpenses = expenses;
-      this.loading = false;
+      this.allExpenses.set(expenses);
+      this.loading.set(false);
     });
   }
 
   get filteredExpenses(): Expense[] {
-    return this.allExpenses.filter((e) => {
+    return this.allExpenses().filter((e) => {
       const matchPerson = !this.selectedPerson || e.who === this.selectedPerson;
       const matchCategory = !this.selectedCategory || e.category === this.selectedCategory;
       return matchPerson && matchCategory;
@@ -198,6 +198,15 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
 
   cancelDelete(): void {
     this.deleteConfirmId = null;
+  }
+
+  async toggleRecurrent(expense: Expense): Promise<void> {
+    try {
+      await this.expenseService.setRecurrent(expense.id!, !expense.recurrent);
+      this.toast.show(expense.recurrent ? 'Spesa non più ricorrente' : 'Spesa segnata come ricorrente');
+    } catch {
+      this.toast.show('Errore nel salvataggio', 'error');
+    }
   }
 
   async deleteExpense(id: string): Promise<void> {

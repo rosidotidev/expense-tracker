@@ -33,3 +33,14 @@
     grid-column: auto;
   }
 }
+
+.recurrent-field .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.recurrent-field input[type='checkbox'] {
+  width: auto;
+}

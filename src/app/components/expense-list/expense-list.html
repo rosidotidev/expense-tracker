@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  @if (loading) {
+  @if (loading()) {
     <div class="loading-center"><span class="spinner"></span></div>
   }
 
@@ -59,6 +59,7 @@
             <th class="sortable" (click)="toggleSort('where')">Dove <span class="sort-icon">{{ getSortIcon('where') }}</span></th>
             <th class="sortable" (click)="toggleSort('category')">Categoria <span class="sort-icon">{{ getSortIcon('category') }}</span></th>
             <th class="sortable" (click)="toggleSort('notes')">Note <span class="sort-icon">{{ getSortIcon('notes') }}</span></th>
+            <th class="recur-cell" title="Recurrent">↻</th>
             <th>Azioni</th>
           </tr>
         </thead>
@@ -71,6 +72,17 @@
               <td>{{ expense.where }}</td>
               <td><span class="badge" [ngClass]="categoryBadgeClass(expense.category)">{{ expense.category }}</span></td>
               <td class="notes-cell">{{ expense.notes || '—' }}</td>
+              <td class="recur-cell">
+                <button
+                  type="button"
+                  class="recur-btn"
+                  [class.on]="expense.recurrent"
+                  title="Recurrent"
+                  aria-label="Recurrent"
+                  [attr.aria-pressed]="!!expense.recurrent"
+                  (click)="toggleRecurrent(expense)"
+                >↻</button>
+              </td>
               <td>
                 @if (deleteConfirmId === expense.id) {
                   <div class="confirm-delete">
