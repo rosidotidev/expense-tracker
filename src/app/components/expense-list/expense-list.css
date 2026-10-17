@@ -177,6 +177,38 @@ th.sortable:hover {
   color: #fff;
 }
 
+.debit-cell {
+  width: 1%;
+  text-align: center;
+  white-space: nowrap;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}
+
+.debit-btn {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--ink-dim);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.debit-btn:hover {
+  border-color: var(--coral);
+  color: var(--coral);
+}
+
+.debit-btn.on {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: #fff;
+}
+
 .expense-cards {
   display: none;
 }

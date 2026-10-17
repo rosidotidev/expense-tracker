@@ -39,7 +39,8 @@ export class ExpenseFormComponent {
       where: ['', Validators.required],
       category: ['', Validators.required],
       notes: [''],
-      recurrent: [false]
+      recurrent: [false],
+      debit: [false]
     });
   }
 
@@ -64,7 +65,8 @@ export class ExpenseFormComponent {
         where: value.where!.trim(),
         category: value.category!,
         notes: (value.notes ?? '').trim(),
-        recurrent: value.recurrent === true
+        recurrent: value.recurrent === true,
+        debit: value.debit === true
       });
       this.toast.show('Spesa aggiunta!');
       this.reset();
@@ -84,7 +86,8 @@ export class ExpenseFormComponent {
       where: '',
       category: '',
       notes: '',
-      recurrent: false
+      recurrent: false,
+      debit: false
     });
   }
 

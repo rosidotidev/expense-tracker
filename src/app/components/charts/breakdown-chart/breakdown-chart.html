@@ -1,0 +1,24 @@
+<div class="breakdown">
+  <h3 class="section-title">{{ title() }}</h3>
+
+  @if (entries().length > 0) {
+    <div class="ring-box">
+      <canvas #canvas></canvas>
+      <div class="ring-total">{{ formatEuro(total()) }}</div>
+    </div>
+
+    <ul class="legend">
+      @for (entry of entries(); track entry.name + entry.isOther; let i = $index) {
+        <li>
+          <button type="button" class="legend-item" [disabled]="entry.isOther" (click)="legendClick(entry)">
+            <span class="dot" [style.background]="colors()[i]"></span>
+            <span class="name">{{ entry.name }}</span>
+            <span class="pct">{{ percent(entry) }}%</span>
+          </button>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="empty-state">{{ emptyMessage() }}</p>
+  }
+</div>

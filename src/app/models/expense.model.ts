@@ -9,4 +9,5 @@ export interface Expense {
   uid: string;
   createdAt: number;
   recurrent?: boolean; // stored only as true; absent means not recurrent
+  debit?: boolean; // stored only as true; absent means not on debit
 }

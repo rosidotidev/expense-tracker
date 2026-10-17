@@ -7,6 +7,7 @@ import { PeopleService } from '../../services/people.service';
 import { CategoryService } from '../../services/category.service';
 import { ToastService } from '../../services/toast.service';
 import { Expense } from '../../models/expense.model';
+import { DebitFilter, matchesDebitFilter } from '../../services/debit-filter';
 
 type SortKey = 'who' | 'amount' | 'date' | 'where' | 'category' | 'notes';
 type SortDir = 'asc' | 'desc';
@@ -29,6 +30,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
   selectedYear: number;
   selectedPerson = '';
   selectedCategory = '';
+  selectedDebit: DebitFilter = '';
   availableYears: number[] = [];
   people: string[] = [];
   categories: string[] = [];
@@ -109,7 +111,7 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     return this.allExpenses().filter((e) => {
       const matchPerson = !this.selectedPerson || e.who === this.selectedPerson;
       const matchCategory = !this.selectedCategory || e.category === this.selectedCategory;
-      return matchPerson && matchCategory;
+      return matchPerson && matchCategory && matchesDebitFilter(e, this.selectedDebit);
     });
   }
 
@@ -204,6 +206,15 @@ export class ExpenseListComponent implements OnInit, OnDestroy {
     try {
       await this.expenseService.setRecurrent(expense.id!, !expense.recurrent);
       this.toast.show(expense.recurrent ? 'Spesa non più ricorrente' : 'Spesa segnata come ricorrente');
+    } catch {
+      this.toast.show('Errore nel salvataggio', 'error');
+    }
+  }
+
+  async toggleDebit(expense: Expense): Promise<void> {
+    try {
+      await this.expenseService.setDebit(expense.id!, !expense.debit);
+      this.toast.show(expense.debit ? 'Debito saldato' : 'Spesa segnata a debito');
     } catch {
       this.toast.show('Errore nel salvataggio', 'error');
     }

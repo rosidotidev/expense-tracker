@@ -85,10 +85,11 @@ export class ExpenseService {
   async addExpense(expense: Omit<Expense, 'id' | 'uid' | 'createdAt'>): Promise<void> {
     const uid = this.fb.uid;
     if (!uid) throw new Error('Non autenticato');
-    const { recurrent, ...data } = expense;
+    const { recurrent, debit, ...data } = expense;
     await this.fb.push(`users/${uid}/expenses`, {
       ...data,
       ...(recurrent === true ? { recurrent: true } : {}),
+      ...(debit === true ? { debit: true } : {}),
       uid,
       createdAt: Date.now()
     });
@@ -98,6 +99,17 @@ export class ExpenseService {
     const uid = this.fb.uid;
     if (!uid) throw new Error('Non autenticato');
     const path = `users/${uid}/expenses/${id}/recurrent`;
+    if (value) {
+      await this.fb.set(path, true);
+    } else {
+      await this.fb.remove(path);
+    }
+  }
+
+  async setDebit(id: string, value: boolean): Promise<void> {
+    const uid = this.fb.uid;
+    if (!uid) throw new Error('Non autenticato');
+    const path = `users/${uid}/expenses/${id}/debit`;
     if (value) {
       await this.fb.set(path, true);
     } else {

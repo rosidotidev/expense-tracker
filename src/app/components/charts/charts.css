@@ -1,0 +1,194 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filters .form-group {
+  flex: 1;
+  min-width: 140px;
+  margin-bottom: 0;
+}
+
+.flags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.section-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 1.25rem 0 0.75rem;
+  color: var(--ink);
+}
+
+.mode-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  padding: 0.2rem;
+  margin-bottom: 1rem;
+  background: var(--bg);
+}
+
+.mode-btn {
+  border: none;
+  background: transparent;
+  color: var(--ink-dim);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.mode-btn.active {
+  background: var(--coral);
+  color: #fff;
+}
+
+.chart-area {
+  position: relative;
+  height: 320px;
+  min-width: 0;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+  min-width: 0;
+}
+
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.kpi-label,
+.kpi-caption {
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+}
+
+.kpi-value {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.kpi-value.up {
+  color: var(--coral);
+}
+
+.kpi-value.down {
+  color: var(--teal);
+}
+
+.yoy-area {
+  position: relative;
+  height: 320px;
+  min-width: 0;
+}
+
+.yoy-note {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+}
+
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+  min-width: 0;
+}
+
+@media (max-width: 500px) {
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Filters: 2 per row, same approach as the overview */
+  .filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .filters .form-group {
+    min-width: 0;
+  }
+
+  .flags {
+    grid-column: 1 / -1;
+    gap: 0.75rem;
+  }
+
+  .flags .btn {
+    width: 100%;
+  }
+
+  .mode-toggle {
+    display: flex;
+    width: 100%;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 0.4rem 0.3rem;
+    font-size: 0.78rem;
+  }
+
+  .chart-area,
+  .yoy-area {
+    height: 260px;
+  }
+
+  .kpi-grid {
+    gap: 0.5rem;
+  }
+
+  .kpi-card {
+    padding: 0.55rem 0.6rem;
+    border-radius: 12px;
+  }
+
+  .kpi-label {
+    font-size: 0.68rem;
+  }
+
+  .kpi-value {
+    font-size: 1.05rem;
+  }
+
+  .kpi-caption {
+    font-size: 0.62rem;
+  }
+}

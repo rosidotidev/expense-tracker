@@ -55,6 +55,12 @@ describe('planRecurringCopies', () => {
     });
   });
 
+  it('does not carry the debit flag into the copy', () => {
+    const source = makeExpense({ id: 'a', date: '2026-09-10', recurrent: true, debit: true });
+    const [copy] = planRecurringCopies([source], TODAY);
+    expect('debit' in copy).toBe(false);
+  });
+
   it('uses the last day of the month when the original day does not exist', () => {
     // 31 August -> September has 30 days
     const sept = new Date(2026, 8, 20);

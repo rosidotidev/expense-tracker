@@ -1,0 +1,115 @@
+<div class="card">
+  <h2 class="card-title">Grafici</h2>
+
+  <div class="filters">
+    <div class="form-group">
+      <label for="chart-from">Da</label>
+      <input id="chart-from" type="date" [ngModel]="filters().from" (ngModelChange)="setFrom($event)" />
+    </div>
+    <div class="form-group">
+      <label for="chart-to">A</label>
+      <input id="chart-to" type="date" [ngModel]="filters().to" (ngModelChange)="setTo($event)" />
+    </div>
+    <div class="form-group">
+      <label for="chart-person">Persona</label>
+      <select id="chart-person" [ngModel]="filters().person" (ngModelChange)="setPerson($event)">
+        <option value="">Tutte</option>
+        @for (p of people(); track p) {
+          <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="chart-category">Categoria</label>
+      <select id="chart-category" [ngModel]="filters().category" (ngModelChange)="setCategory($event)">
+        <option value="">Tutte</option>
+        @for (c of categories(); track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+    <div class="flags">
+      <label class="flag">
+        <input type="checkbox" [ngModel]="filters().onlyRecurrent" (ngModelChange)="setOnlyRecurrent($event)" />
+        Solo ricorrenti
+      </label>
+      <label class="flag">
+        <input type="checkbox" [ngModel]="filters().onlyDebit" (ngModelChange)="setOnlyDebit($event)" />
+        Solo addebito
+      </label>
+      <button type="button" class="btn btn-outline btn-sm" (click)="reset()">Reimposta</button>
+    </div>
+  </div>
+
+  @if (rangeInverted()) {
+    <p class="field-error">La data iniziale non può essere dopo quella finale</p>
+  }
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <span class="kpi-label">Totale periodo</span>
+      <span class="kpi-value">{{ formatEuro(summary().total) }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Media mensile</span>
+      <span class="kpi-value">{{ formatEuro(summary().monthlyAverage) }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">vs periodo prec.</span>
+      <span class="kpi-value" [class.up]="changeDirection() === 'up'" [class.down]="changeDirection() === 'down'">
+        {{ changeText() }}
+      </span>
+      @if (changeDirection() === 'up') {
+        <span class="kpi-caption">spesa in aumento</span>
+      } @else if (changeDirection() === 'down') {
+        <span class="kpi-caption">spesa in calo</span>
+      }
+    </div>
+  </div>
+
+  <h3 class="section-title">Andamento mensile</h3>
+
+  <div class="mode-toggle" role="group" aria-label="Modalità del grafico">
+    @for (m of modes; track m.key) {
+      <button type="button" class="mode-btn" [class.active]="mode() === m.key" (click)="setMode(m.key)">
+        {{ m.label }}
+      </button>
+    }
+  </div>
+
+  @if (hasData()) {
+    <div class="chart-area">
+      <app-chart-canvas [config]="chartConfig()" />
+    </div>
+  } @else {
+    <p class="empty-state">Nessun dato per i filtri selezionati</p>
+  }
+
+  <div class="breakdown-grid">
+    <app-breakdown-chart
+      title="Per categoria"
+      [entries]="categoryEntries()"
+      [colors]="categoryColors()"
+      [emptyMessage]="emptyMessage"
+      (sliceClick)="onCategorySlice($event)"
+    />
+    <app-breakdown-chart
+      title="Per persona"
+      [entries]="personEntries()"
+      [colors]="personColors()"
+      [emptyMessage]="emptyMessage"
+      (sliceClick)="onPersonSlice($event)"
+    />
+  </div>
+
+  <h3 class="section-title">Anno su anno</h3>
+
+  @if (hasYearly()) {
+    <div class="yoy-area">
+      <app-yoy-chart [config]="yoyConfig()" />
+    </div>
+    <p class="yoy-note">Non è influenzato dal filtro date.</p>
+  } @else {
+    <p class="empty-state">Nessun dato per i filtri selezionati</p>
+  }
+</div>

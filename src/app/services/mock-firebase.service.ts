@@ -81,17 +81,14 @@ export class MockFirebaseService {
 
   set(path: string, data: any): Promise<void> {
     this.setNestedValue(path, data);
-    // Emit on parent path as well
-    const parent = path.substring(0, path.lastIndexOf('/'));
-    if (parent) this.emitPath(parent);
+    this.emitAncestors(path);
     this.emitPath(path);
     return Promise.resolve();
   }
 
   remove(path: string): Promise<void> {
     this.deleteNestedValue(path);
-    const parent = path.substring(0, path.lastIndexOf('/'));
-    if (parent) this.emitPath(parent);
+    this.emitAncestors(path);
     return Promise.resolve();
   }
 
@@ -137,6 +134,15 @@ export class MockFirebaseService {
       this.subjects.set(path, new BehaviorSubject(new MockDataSnapshot(data && typeof data === 'object' ? data : null)));
     }
     return this.subjects.get(path)!;
+  }
+
+  // Notify listeners on every ancestor path, so a write to a nested child refreshes list listeners
+  private emitAncestors(path: string): void {
+    let parent = path.substring(0, path.lastIndexOf('/'));
+    while (parent) {
+      this.emitPath(parent);
+      parent = parent.substring(0, parent.lastIndexOf('/'));
+    }
   }
 
   private emitPath(path: string): void {

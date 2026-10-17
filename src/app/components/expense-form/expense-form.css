@@ -34,13 +34,15 @@
   }
 }
 
-.recurrent-field .checkbox-label {
+.recurrent-field .checkbox-label,
+.debit-field .checkbox-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
 }
 
-.recurrent-field input[type='checkbox'] {
+.recurrent-field input[type='checkbox'],
+.debit-field input[type='checkbox'] {
   width: auto;
 }

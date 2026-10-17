@@ -37,6 +37,14 @@
         }
       </select>
     </div>
+    <div class="form-group">
+      <label for="debit-filter">Debito</label>
+      <select id="debit-filter" [(ngModel)]="selectedDebit" (ngModelChange)="onLocalFilterChange()" name="debit">
+        <option value="">Tutti</option>
+        <option value="debit">A debito</option>
+        <option value="settled">Non a debito</option>
+      </select>
+    </div>
   </div>
 
   @if (loading()) {
@@ -60,6 +68,7 @@
             <th class="sortable" (click)="toggleSort('category')">Categoria <span class="sort-icon">{{ getSortIcon('category') }}</span></th>
             <th class="sortable" (click)="toggleSort('notes')">Note <span class="sort-icon">{{ getSortIcon('notes') }}</span></th>
             <th class="recur-cell" title="Recurrent">↻</th>
+            <th class="debit-cell" title="Debit">€</th>
             <th>Azioni</th>
           </tr>
         </thead>
@@ -82,6 +91,17 @@
                   [attr.aria-pressed]="!!expense.recurrent"
                   (click)="toggleRecurrent(expense)"
                 >↻</button>
+              </td>
+              <td class="debit-cell">
+                <button
+                  type="button"
+                  class="debit-btn"
+                  [class.on]="expense.debit"
+                  title="Debit"
+                  aria-label="Debit"
+                  [attr.aria-pressed]="!!expense.debit"
+                  (click)="toggleDebit(expense)"
+                >€</button>
               </td>
               <td>
                 @if (deleteConfirmId === expense.id) {
@@ -127,6 +147,16 @@
               (click)="toggleRecurrent(expense)"
             >
               ↻ Ricorrente
+            </button>
+            <button
+              type="button"
+              class="btn btn-xs"
+              [class.btn-primary]="expense.debit"
+              [class.btn-outline]="!expense.debit"
+              [attr.aria-pressed]="!!expense.debit"
+              (click)="toggleDebit(expense)"
+            >
+              € Debito
             </button>
             @if (deleteConfirmId === expense.id) {
               <div class="confirm-delete">

@@ -9,10 +9,11 @@ import { ToastService } from '../../services/toast.service';
 import { ExpenseFormComponent } from '../expense-form/expense-form';
 import { ExpenseListComponent } from '../expense-list/expense-list';
 import { OverviewComponent } from '../overview/overview';
+import { ChartsComponent } from '../charts/charts';
 import { PeopleComponent } from '../people/people';
 import { CategoriesComponent } from '../categories/categories';
 
-type Tab = 'registra' | 'storico' | 'riepilogo' | 'persone' | 'categorie';
+type Tab = 'registra' | 'storico' | 'riepilogo' | 'grafici' | 'persone' | 'categorie';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +23,7 @@ type Tab = 'registra' | 'storico' | 'riepilogo' | 'persone' | 'categorie';
     ExpenseFormComponent,
     ExpenseListComponent,
     OverviewComponent,
+    ChartsComponent,
     PeopleComponent,
     CategoriesComponent
   ],
@@ -35,6 +37,7 @@ export class DashboardComponent implements OnInit {
     { key: 'registra', label: 'Registra spesa' },
     { key: 'storico', label: 'Storico' },
     { key: 'riepilogo', label: 'Riepilogo' },
+    { key: 'grafici', label: 'Grafici' },
     { key: 'persone', label: 'Persone' },
     { key: 'categorie', label: 'Categorie' }
   ];
